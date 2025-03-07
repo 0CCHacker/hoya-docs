@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoya Docs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eef2f5;
+        }
+        nav {
+            background: #0055A4;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 10px 20px;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+        nav a:hover, nav a.active {
+            background: #003366;
+            border-radius: 5px;
+        }
+        #pdf-viewer {
+            width: 100%;
+            height: calc(100vh - 50px);
+            border: none;
+            margin-top: 50px; /* Align right under the navbar */
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="?pdf=clock-in-out-system" onclick="changePDF(event, 'clock-in-out-system')">Clock In-Out System</a>
+        <a href="?pdf=it-ticket-system" onclick="changePDF(event, 'it-ticket-system')">IT Ticket System</a>
+        <a href="?pdf=medical-claim-policies" onclick="changePDF(event, 'medical-claim-policies')">Medical Claim Policies</a>
+        <a href="?pdf=transport-schedule" onclick="changePDF(event, 'transport-schedule')">Transport Schedule</a>
+        <a href="?pdf=transport-claim-submission" onclick="changePDF(event, 'transport-claim-submission')">D365 Transport Claim Submission</a>
+    </nav>
+
+    <iframe id="pdf-viewer"></iframe>
+
+    <script>
+        const pdfFiles = {
+            "clock-in-out-system": "./pdfs/COMPANY CLOCK IN-OUT SYSTEM GUIDE.pdf",
+            "it-ticket-system": "./pdfs/COMPANY IT TICKET SYSTEM GUIDE.pdf",
+            "medical-claim-policies": "./pdfs/COMPANY MEDICAL CLAIM POLICIES .pdf",
+            "transport-schedule": "./pdfs/COMPANY TRANSPORT SCHEDULE.pdf",
+            "transport-claim-submission": "./pdfs/D365 TRANSPORT CLAIM SUBMISSION GUIDE.pdf"
+        };
+
+        function changePDF(event, pdfKey) {
+            event.preventDefault(); // Prevent page reload
+            window.history.pushState({}, '', '?pdf=' + pdfKey);
+
+            const viewer = document.getElementById("pdf-viewer");
+            const navLinks = document.querySelectorAll("nav a");
+
+            viewer.src = pdfFiles[pdfKey];
+            viewer.style.display = "block";
+
+            // Remove active class from all links, add to the selected one
+            navLinks.forEach(link => link.classList.remove("active"));
+            event.target.classList.add("active");
+        }
+
+        function getPDFFileFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const pdfKey = urlParams.get('pdf');
+
+            if (pdfKey && pdfFiles[pdfKey]) {
+                changePDF({ preventDefault: () => {} }, pdfKey);
+            }
+        }
+
+        window.onload = getPDFFileFromURL;
+    </script>
+
+</body>
+</html>
